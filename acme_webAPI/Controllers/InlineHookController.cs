@@ -311,6 +311,26 @@ namespace webAPI_allDemo_core31.Controllers
             SamlCallbackResponse callbackResponse = new SamlCallbackResponse();
             string myParams = null;
 
+            //extract extraParams from request
+            string myUrl = request.data.context.request.url.value;
+            int index1 = myUrl.IndexOf("&extra_param=");
+            string partial = myUrl.Substring(index1 + 13);
+            int index2 = partial.IndexOf("&");
+            if (index1 > 0 && index2 > 0)
+            {
+                myParams = partial.Substring(0, index2);
+            }
+            else if(index1 > 0 && index2 < 0)
+            {
+                myParams = partial;
+            }
+            else
+            {
+                myParams = "SomeExternalData";
+            }
+
+
+
             //// put any additional processing here, keep latency to a minimum
 
 
@@ -330,7 +350,9 @@ namespace webAPI_allDemo_core31.Controllers
             Attributevalue6 attributeValue6 = new Attributevalue6();
             attributeValue6.attributes = new Attributes7();
             attributeValue6.attributes.xsitype = "xs:string";
-            attributeValue6.value = "SomeExternalData";
+            //attributeValue6.value = "SomeExternalData";
+
+            attributeValue6.value = myParams;
             myValue.value.attributeValues.Add(attributeValue6);
             command5.value.Add(myValue);
             callbackResponse.commands.Add(command5);
